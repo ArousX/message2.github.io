@@ -3,6 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>留言板</title>
+  <script>
+// 发留言
+async function send() {
+  const input = document.getElementById("msg");
+  const msg = input.value.trim(); // 去掉前后空格
+
+  // 🚫 空内容拦截
+  if (!msg) {
+    alert("不能发送空白内容");
+    return;
+  }
+
+  await supabaseClient
+    .from("messages")
+    .insert([{ content: msg }]);
+
+  input.value = "";
+  load();
+}
+</script>
 </head>
 <body>
 
