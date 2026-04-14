@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>留言板</title>
+</head>
+<body>
+
+<h2>留言板</h2>
+
+<input id="msg" placeholder="写留言">
+<button onclick="send()">发送</button>
+
+<hr>
+
+<ul id="list"></ul>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabaseClient = supabase.createClient(
+  "https://ovfwarzvmdynmysdagmy.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im92Zndhcnp2bWR5bm15c2RhZ215Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNTQ5NzQsImV4cCI6MjA5MTczMDk3NH0.ZzAec-6TcRIOxfviuWSx8rdwR8S_8YeoeD_L7IWt0Gs"
+);
+
+// 发留言
+async function send() {
+  const msg = document.getElementById("msg").value;
+
+  await supabaseClient
+    .from("messages")
+    .insert([{ content: msg }]);
+
+  document.getElementById("msg").value = "";
+  load();
+}
+
+// 读留言
+async function load() {
+  let { data } = await supabaseClient
+    .from("messages")
+    .select("*")
+    .order("id", { ascending: false });
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(item => {
+    let li = document.createElement("li");
+    li.innerText = item.content;
+    list.appendChild(li);
+  });
+}
+
+load();
+</script>
+
+</body>
+</html>
