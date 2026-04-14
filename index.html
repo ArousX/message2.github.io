@@ -4,24 +4,24 @@
   <meta charset="UTF-8">
   <title>留言板</title>
   <script>
-// 发留言
-async function send() {
-  const input = document.getElementById("msg");
-  const msg = input.value.trim(); // 去掉前后空格
-
-  // 🚫 空内容拦截
-  if (!msg) {
-    alert("不能发送空白内容");
-    return;
-  }
-
-  await supabaseClient
+async function load() {
+  let { data } = await supabaseClient
     .from("messages")
-    .insert([{ content: msg }]);
+    .select("*")
+    .order("id", { ascending: false });
 
-  input.value = "";
-  load();
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(item => {
+    let li = document.createElement("li");
+    li.innerText = item.content;
+    list.appendChild(li);
+  });
 }
+
+// 页面加载自动读取
+load();
 </script>
 </head>
 <body>
